@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="ru" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Learning Hub</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          },
+          colors: {
+            python: {
+              blue: '#306998',
+              yellow: '#FFD43B',
+              dark: '#1e1e2e',
+              darker: '#11111b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    .app-wrapper { height: 100%; overflow: auto; }
+    .code-block { background: #1e1e2e; border-radius: 8px; overflow-x: auto; }
+    .code-block code { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; }
+    .keyword { color: #c678dd; }
+    .string { color: #98c379; }
+    .function { color: #61afef; }
+    .comment { color: #5c6370; font-style: italic; }
+    .number { color: #d19a66; }
+    .decorator { color: #e5c07b; }
+    .builtin { color: #56b6c2; }
+    .nav-link { transition: all 0.2s ease; }
+    .nav-link:hover { transform: translateX(4px); }
+    .section-card { transition: all 0.3s ease; }
+    .section-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px -12px rgba(0,0,0,0.3); }
+    .search-highlight { background: #FFD43B; color: #1e1e2e; padding: 0 2px; border-radius: 2px; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #718096; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-gray-50 dark:bg-python-darker text-gray-900 dark:text-gray-100 font-sans">
+  <div class="app-wrapper flex flex-col"><!-- Header -->
+   <header class="sticky top-0 z-50 bg-white/80 dark:bg-python-dark/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="flex items-center justify-between h-16"><a href="#" onclick="showPage('home')" class="flex items-center gap-3">
+       <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-python-blue to-python-yellow flex items-center justify-center"><span class="text-xl">🐍</span>
+       </div><span id="site-title" class="text-xl font-bold bg-gradient-to-r from-python-blue to-python-yellow bg-clip-text text-transparent">Python Learning Hub</span> </a>
+      <div class="hidden md:flex items-center gap-6">
+       <nav class="flex items-center gap-1"><button onclick="showPage('home')" class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition">Главная</button> <button onclick="showPage('install')" class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition">Установка</button> <button onclick="showPage('tutorial')" class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition">Учебник</button> <button onclick="showPage('cheatsheet')" class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition">Шпаргалки</button> <button onclick="showPage('faq')" class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition">FAQ</button>
+       </nav>
+       <div class="flex items-center gap-2">
+        <div class="relative"><input type="text" id="search-input" placeholder="Поиск..." class="w-48 px-4 py-2 pl-10 rounded-full bg-gray-100 dark:bg-gray-800 border-0 text-sm focus:outline-none focus:ring-2 focus:ring-python-blue" oninput="handleSearch(this.value)">
+         <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+         </svg>
+        </div><button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition" aria-label="Переключить тему"> <span id="theme-icon" class="text-xl">🌙</span> </button>
+       </div>
+      </div><button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+       <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+       </svg></button>
+     </div>
+    </div><!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-python-dark">
+     <div class="px-4 py-3 space-y-1"><button onclick="showPage('home'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">Главная</button> <button onclick="showPage('install'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">Установка</button> <button onclick="showPage('tutorial'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">Учебник</button> <button onclick="showPage('cheatsheet'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">Шпаргалки</button> <button onclick="showPage('faq'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">FAQ</button>
+      <div class="flex items-center justify-between px-3 py-2"><span class="text-sm text-gray-500">Тема</span> <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"> <span id="theme-icon-mobile" class="text-xl">🌙</span> </button>
+      </div>
+     </div>
+    </div>
+   </header><!-- Search Results -->
+   <div id="search-results" class="hidden fixed top-20 left-1/2 transform -translate-x-1/2 w-full max-w-2xl mx-4 bg-white dark:bg-python-dark rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 z-50 max-h-96 overflow-y-auto">
+    <div class="p-4">
+     <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-3">Результаты поиска</h3>
+     <div id="search-results-list"></div>
+    </div>
+   </div><!-- Main Content -->
+   <main class="flex-1"><!-- Home Page -->
+    <div id="page-home" class="page">
+     <div class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-python-blue/10 to-python-yellow/10"></div>
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+       <div class="text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-python-yellow/20 text-python-blue dark:text-python-yellow text-sm font-medium mb-6"><span>🚀</span> Начни изучать Python сегодня
+        </div>
+        <h1 class="text-4xl sm:text-6xl font-bold mb-6">Изучи <span class="bg-gradient-to-r from-python-blue to-python-yellow bg-clip-text text-transparent">Python</span><br>
+         с нуля до профи</h1>
+        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">Полный учебник по Python на русском языке. От установки до создания веб-приложений и работы с API.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center"><button onclick="showPage('tutorial')" class="px-8 py-4 rounded-xl bg-gradient-to-r from-python-blue to-python-blue/80 text-white font-semibold hover:shadow-lg hover:shadow-python-blue/30 transition transform hover:scale-105"> Начать обучение → </button> <button onclick="showPage('install')" class="px-8 py-4 rounded-xl bg-white dark:bg-python-dark border-2 border-gray-200 dark:border-gray-700 font-semibold hover:border-python-blue transition"> Установить Python </button>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <h2 class="text-2xl font-bold mb-8 text-center">Что вы изучите</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+       <div class="section-card p-6 rounded-2xl bg-white dark:bg-python-dark border border-gray-200 dark:border-gray-700">
+        <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4"><span class="text-2xl">📚</span>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">Основы Python</h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm">Переменные, типы данных, операторы, условия и циклы</p>
+       </div>
+       <div class="section-card p-6 rounded-2xl bg-white dark:bg-python-dark border border-gray-200 dark:border-gray-700">
+        <div class="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-4"><span class="text-2xl">🔧</span>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">Функции и модули</h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm">Создание функций, импорт модулей, работа с пакетами</p>
+       </div>
+       <div class="section-card p-6 rounded-2xl bg-white dark:bg-python-dark border border-gray-200 dark:border-gray-700">
+        <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-4"><span class="text-2xl">🎯</span>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">ООП</h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm">Классы, наследование, полиморфизм, инкапсуляция</p>
+       </div>
+       <div class="section-card p-6 rounded-2xl bg-white dark:bg-python-dark border border-gray-200 dark:border-gray-700">
+        <div class="w-12 h-12 rounded-xl bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center mb-4"><span class="text-2xl">🌐</span>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">Веб-разработка</h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm">Flask, FastAPI, создание REST API</p>
+       </div>
+       <div class="section-card p-6 rounded-2xl bg-white dark:bg-python-dark border border-gray-200 dark:border-gray-700">
+        <div class="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-4"><span class="text-2xl">⚡</span>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">Async Python</h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm">Асинхронное программирование, asyncio, aiohttp</p>
+       </div>
+       <div class="section-card p-6 rounded-2xl bg-white dark:bg-python-dark border border-gray-200 dark:border-gray-700">
+        <div class="w-12 h-12 rounded-xl bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center mb-4"><span class="text-2xl">📦</span>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">Виртуальные окружения</h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm">venv, pip, управление зависимостями</p>
+       </div>
+      </div>
+     </div>
+    </div><!-- Install Page -->
+    <div id="page-install" class="page hidden">
+     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <h1 class="text-3xl sm:text-4xl font-bold mb-2">Установка Python</h1>
+      <p class="text-gray-600 dark:text-gray-400 mb-8">Пошаговое руководство по установке Python на разные операционные системы</p>
+      <div class="space-y-8"><!-- Windows -->
+       <section class="bg-white dark:bg-python-dark rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700 bg-blue-50 dark:bg-blue-900/20">
+         <div class="flex items-center gap-3"><span class="text-3xl">🪟</span>
+          <h2 class="text-xl font-bold">Windows</h2>
+         </div>
+        </div>
+        <div class="p-6 space-y-4">
+         <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-python-blue text-white flex items-center justify-center font-bold text-sm">
+           1
+          </div>
+          <div>
+           <h3 class="font-semibold mb-1">Скачайте установщик</h3>
+           <p class="text-gray-600 dark:text-gray-400 text-sm">Перейдите на <a href="https://python.org/downloads" target="_blank" rel="noopener noreferrer" class="text-python-blue hover:underline">python.org/downloads</a> и скачайте последнюю версию Python для Windows.</p>
+          </div>
+         </div>
+         <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-python-blue text-white flex items-center justify-center font-bold text-sm">
+           2
+          </div>
+          <div>
+           <h3 class="font-semibold mb-1">Запустите установщик</h3>
+           <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">Обязательно отметьте галочку <strong>"Add Python to PATH"</strong> перед нажатием "Install Now".</p>
+           <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 text-sm">
+            ⚠️ Если забыли добавить в PATH, придётся переустанавливать Python!
+           </div>
+          </div>
+         </div>
+         <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-python-blue text-white flex items-center justify-center font-bold text-sm">
+           3
+          </div>
+          <div>
+           <h3 class="font-semibold mb-1">Проверьте установку</h3>
+           <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">Откройте командную строку (cmd) и введите:</p>
+           <div class="code-block p-4"><code class="text-gray-100">python --version<br>
+             pip --version</code>
+           </div>
+          </div>
+         </div>
+        </div>
+       </section><!-- macOS -->
+       <section class="bg-white dark:bg-python-dark rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+         <div class="flex items-center gap-3"><span class="text-3xl">🍎</span>
+          <h2 class="text-xl font-bold">macOS</h2>
+         </div>
+        </div>
+        <div class="p-6 space-y-4">
+         <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-python-blue text-white flex items-center justify-center font-bold text-sm">
+           1
+          </div>
+          <div>
+           <h3 class="font-semibold mb-1">Установите Homebrew (если нет)</h3>
+           <div class="code-block p-4 mt-2"><code class="text-gray-100">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code>
+           </div>
+          </div>
+         </div>
+         <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-python-blue text-white flex items-center justify-center font-bold text-sm">
+           2
+          </div>
+          <div>
+           <h3 class="font-semibold mb-1">Установите Python</h3>
+           <div class="code-block p-4 mt-2"><code class="text-gray-100">brew install python</code>
+           </div>
+          </div>
+         </div>
+         <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-python-blue text-white flex items-center justify-center font-bold text-sm">
+           3
+          </div>
+          <div>
+           <h3 class="font-semibold mb-1">Проверьте установку</h3>
+           <div class="code-block p-4 mt-2"><code class="text-gray-100">python3 --version<br>
+             pip3 --version</code>
+           </div>
+          </div>
+         </div>
+        </div>
+       </section><!-- Linux -->
+       <section class="bg-white dark:bg-python-dark rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/20">
+         <div class="flex items-center gap-3"><span class="text-3xl">🐧</span>
+          <h2 class="text-xl font-bold">Linux (Ubuntu/Debian)</h2>
+         </div>
+        </div>
+        <div class="p-6 space-y-4">
+         <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-python-blue text-white flex items-center justify-center font-bold text-sm">
+           1
+          </div>
+          <div>
+           <h3 class="font-semibold mb-1">Обновите пакеты и установите Python</h3>
+           <div class="code-block p-4 mt-2"><code class="text-gray-100">sudo apt update<br>
+             sudo apt install python3 python3-pip python3-venv</code>
+           </div>
+          </div>
+         </div>
+         <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-python-blue text-white flex items-center justify-center font-bold text-sm">
+           2
+          </div>
+          <div>
+           <h3 class="font-semibold mb-1">Проверьте установку</h3>
+           <div class="code-block p-4 mt-2"><code class="text-gray-100">python3 --version<br>
+             pip3 --version</code>
+           </div>
+          </div>
+         </div>
+        </div>
+       </section><!-- VS Code -->
+       <section class="bg-white dark:bg-python-dark rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700 bg-purple-50 dark:bg-purple-900/20">
+         <div class="flex items-center gap-3"><span class="text-3xl">💻</span>
+          <h2 class="text-xl font-bold">Настройка VS Code</h2>
+         </div>
+        </div>
+        <div class="p-6 space-y-4">
+         <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-sm">
+           1
+          </div>
+          <div>
+           <h3 class="font-semibold mb-1">Скачайте VS Code</h3>
+           <p class="text-gray-600 dark:text-gray-400 text-sm">Перейдите на <a href="https://code.visualstudio.com" target="_blank" rel="noopener noreferrer" class="text-python-blue hover:underline">code.visualstudio.com</a> и скачайте версию для вашей ОС.</p>
+          </div>
+         </div>
+         <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-sm">
+           2
+          </div>
+          <div>
+           <h3 class="font-semibold mb-1">Установите расширение Python</h3>
+           <p class="text-gray-600 dark:text-gray-400 text-sm">Откройте VS Code → Extensions (Ctrl+Shift+X) → Найдите "Python" → Установите расширение от Microsoft.</p>
+          </div>
+         </div>
+         <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-sm">
+           3
+          </div>
+          <div>
+           <h3 class="font-semibold mb-1">Создайте первый файл</h3>
+           <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">Создайте файл <code class="bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">hello.py</code>:</p>
+           <div class="code-block p-4"><code class="text-gray-100"><span class="builtin">print</span>(<span class="string">"Привет, Python!"</span>)</code>
+           </div>
+          </div>
+         </div>
+         <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-sm">
+           4
+          </div>
+          <div>
+           <h3 class="font-semibold mb-1">Запустите код</h3>
+           <p class="text-gray-600 dark:text-gray-400 text-sm">Нажмите <kbd class="bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded text-xs">F5</kbd> или кнопку ▶️ в правом верхнем углу.</p>
+          </div>
+         </div>
+        </div>
+       </section><!-- pip -->
+       <section class="bg-white dark:bg-python-dark rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700 bg-green-50 dark:bg-green-900/20">
+         <div class="flex items-center gap-3"><span class="text-3xl">📦</span>
+          <h2 class="text-xl font-bold">Работа с pip</h2>
+         </div>
+        </div>
+        <div class="p-6 space-y-4">
+         <p class="text-gray-600 dark:text-gray-400">pip — менеджер пакетов Python для установки библиотек.</p>
+         <div class="code-block p-4 space-y-2"><code class="text-gray-100 block"><span class="comment"># Установить пакет</span></code> <code class="text-gray-100 block">pip install requests</code> <code class="text-gray-100 block mt-3"><span class="comment"># Установить конкретную версию</span></code> <code class="text-gray-100 block">pip install requests==2.28.0</code> <code class="text-gray-100 block mt-3"><span class="comment"># Обновить пакет</span></code> <code class="text-gray-100 block">pip install --upgrade requests</code> <code class="text-gray-100 block mt-3"><span class="comment"># Удалить пакет</span></code> <code class="text-gray-100 block">pip uninstall requests</code> <code class="text-gray-100 block mt-3"><span class="comment"># Список установленных пакетов</span></code> <code class="text-gray-100 block">pip list</code>
+         </div>
+        </div>
+       </section>
+      </div>
+     </div>
+    </div><!-- Tutorial Page -->
+    <div id="page-tutorial" class="page hidden">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="lg:grid lg:grid-cols-4 lg:gap-8"><!-- Sidebar Navigation -->
+       <aside class="hidden lg:block">
+        <nav class="sticky top-24 space-y-1 max-h-[calc(100%-6rem)] overflow-y-auto pr-4">
+         <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Содержание</p><a href="#basics" onclick="scrollToSection('basics')" class="nav-link block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📚 Основы Python</a> <a href="#data-types" onclick="scrollToSection('data-types')" class="nav-link block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📊 Типы данных</a> <a href="#control-flow" onclick="scrollToSection('control-flow')" class="nav-link block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🔄 Условия и циклы</a> <a href="#functions" onclick="scrollToSection('functions')" class="nav-link block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🔧 Функции</a> <a href="#oop" onclick="scrollToSection('oop')" class="nav-link block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🎯 ООП</a> <a href="#modules" onclick="scrollToSection('modules')" class="nav-link block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📦 Модули</a> <a href="#venv" onclick="scrollToSection('venv')" class="nav-link block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🌍 Виртуальные окружения</a> <a href="#files" onclick="scrollToSection('files')" class="nav-link block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📁 Работа с файлами</a> <a href="#exceptions" onclick="scrollToSection('exceptions')" class="nav-link block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">⚠️ Исключения</a> <a href="#api" onclick="scrollToSection('api')" class="nav-link block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🌐 Работа с API</a> <a href="#async" onclick="scrollToSection('async')" class="nav-link block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">⚡ Async Python</a> <a href="#flask" onclick="scrollToSection('flask')" class="nav-link block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🍶 Flask</a> <a href="#fastapi" onclick="scrollToSection('fastapi')" class="nav-link block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🚀 FastAPI</a>
+        </nav>
+       </aside><!-- Main Content -->
+       <div class="lg:col-span-3 space-y-12">
+        <h1 class="text-3xl sm:text-4xl font-bold mb-8">Полный учебник Python</h1><!-- Basics -->
+        <section id="basics" class="scroll-mt-24">
+         <div class="flex items-center gap-3 mb-6"><span class="text-3xl">📚</span>
+          <h2 class="text-2xl font-bold">Основы Python</h2>
+         </div>
+         <div class="prose dark:prose-invert max-w-none">
+          <p class="text-gray-600 dark:text-gray-400 mb-4">Python — высокоуровневый язык программирования с простым и понятным синтаксисом. Он идеально подходит для начинающих.</p>
+          <h3 class="text-lg font-semibold mt-6 mb-3">Переменные</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">В Python не нужно объявлять тип переменной — он определяется автоматически:</p>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="comment"># Целое число</span> age = <span class="number">25</span> <span class="comment"># Дробное число</span> price = <span class="number">19.99</span> <span class="comment"># Строка</span> name = <span class="string">"Анна"</span> <span class="comment"># Логическое значение</span> is_student = <span class="keyword">True</span> <span class="comment"># Вывод значений</span> <span class="builtin">print</span>(f<span class="string">"Имя: {name}, Возраст: {age}"</span>)</code>
+          </div>
+          <h3 class="text-lg font-semibold mt-6 mb-3">Операторы</h3>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="comment"># Арифметические операторы</span> a = <span class="number">10</span> b = <span class="number">3</span> <span class="builtin">print</span>(a + b) <span class="comment"># Сложение: 13</span> <span class="builtin">print</span>(a - b) <span class="comment"># Вычитание: 7</span> <span class="builtin">print</span>(a * b) <span class="comment"># Умножение: 30</span> <span class="builtin">print</span>(a / b) <span class="comment"># Деление: 3.333...</span> <span class="builtin">print</span>(a // b) <span class="comment"># Целочисленное деление: 3</span> <span class="builtin">print</span>(a % b) <span class="comment"># Остаток от деления: 1</span> <span class="builtin">print</span>(a ** b) <span class="comment"># Возведение в степень: 1000</span></code>
+          </div>
+         </div>
+        </section><!-- Data Types -->
+        <section id="data-types" class="scroll-mt-24">
+         <div class="flex items-center gap-3 mb-6"><span class="text-3xl">📊</span>
+          <h2 class="text-2xl font-bold">Типы данных</h2>
+         </div>
+         <div class="prose dark:prose-invert max-w-none">
+          <h3 class="text-lg font-semibold mb-3">Списки (list)</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">Упорядоченная изменяемая коллекция элементов:</p>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="comment"># Создание списка</span> fruits = [<span class="string">"яблоко"</span>, <span class="string">"банан"</span>, <span class="string">"апельсин"</span>] <span class="comment"># Доступ по индексу</span> <span class="builtin">print</span>(fruits[<span class="number">0</span>]) <span class="comment"># яблоко</span> <span class="builtin">print</span>(fruits[-<span class="number">1</span>]) <span class="comment"># апельсин (последний)</span> <span class="comment"># Методы списка</span> fruits.append(<span class="string">"груша"</span>) <span class="comment"># Добавить в конец</span> fruits.insert(<span class="number">1</span>, <span class="string">"киви"</span>) <span class="comment"># Вставить по индексу</span> fruits.remove(<span class="string">"банан"</span>) <span class="comment"># Удалить элемент</span> fruits.pop() <span class="comment"># Удалить последний</span> <span class="comment"># Срезы</span> <span class="builtin">print</span>(fruits[<span class="number">1</span>:<span class="number">3</span>]) <span class="comment"># Элементы с 1 по 2</span> <span class="builtin">print</span>(fruits[::<span class="number">2</span>]) <span class="comment"># Каждый второй</span></code>
+          </div>
+          <h3 class="text-lg font-semibold mt-6 mb-3">Словари (dict)</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">Коллекция пар ключ-значение:</p>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="comment"># Создание словаря</span> person = { <span class="string">"name"</span>: <span class="string">"Иван"</span>, <span class="string">"age"</span>: <span class="number">30</span>, <span class="string">"city"</span>: <span class="string">"Москва"</span> } <span class="comment"># Доступ к значениям</span> <span class="builtin">print</span>(person[<span class="string">"name"</span>]) <span class="comment"># Иван</span> <span class="builtin">print</span>(person.get(<span class="string">"age"</span>)) <span class="comment"># 30</span> <span class="comment"># Изменение и добавление</span> person[<span class="string">"age"</span>] = <span class="number">31</span> person[<span class="string">"job"</span>] = <span class="string">"программист"</span> <span class="comment"># Методы словаря</span> <span class="builtin">print</span>(person.keys()) <span class="comment"># Все ключи</span> <span class="builtin">print</span>(person.values()) <span class="comment"># Все значения</span> <span class="builtin">print</span>(person.items()) <span class="comment"># Пары ключ-значение</span></code>
+          </div>
+          <h3 class="text-lg font-semibold mt-6 mb-3">Кортежи (tuple)</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">Неизменяемая упорядоченная коллекция:</p>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100">coordinates = (<span class="number">55.75</span>, <span class="number">37.62</span>) <span class="builtin">print</span>(coordinates[<span class="number">0</span>]) <span class="comment"># 55.75</span> <span class="comment"># Распаковка кортежа</span> lat, lon = coordinates <span class="builtin">print</span>(f<span class="string">"Широта: {lat}, Долгота: {lon}"</span>)</code>
+          </div>
+          <h3 class="text-lg font-semibold mt-6 mb-3">Множества (set)</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">Неупорядоченная коллекция уникальных элементов:</p>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100">numbers = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>} <span class="builtin">print</span>(numbers) <span class="comment"># {1, 2, 3}</span> <span class="comment"># Операции с множествами</span> a = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>} b = {<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>} <span class="builtin">print</span>(a | b) <span class="comment"># Объединение: {1, 2, 3, 4}</span> <span class="builtin">print</span>(a &amp; b) <span class="comment"># Пересечение: {2, 3}</span> <span class="builtin">print</span>(a - b) <span class="comment"># Разность: {1}</span></code>
+          </div>
+         </div>
+        </section><!-- Control Flow -->
+        <section id="control-flow" class="scroll-mt-24">
+         <div class="flex items-center gap-3 mb-6"><span class="text-3xl">🔄</span>
+          <h2 class="text-2xl font-bold">Условия и циклы</h2>
+         </div>
+         <div class="prose dark:prose-invert max-w-none">
+          <h3 class="text-lg font-semibold mb-3">Условные операторы</h3>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100">age = <span class="number">18</span> <span class="keyword">if</span> age &lt; <span class="number">18</span>: <span class="builtin">print</span>(<span class="string">"Несовершеннолетний"</span>) <span class="keyword">elif</span> age == <span class="number">18</span>: <span class="builtin">print</span>(<span class="string">"Только исполнилось 18!"</span>) <span class="keyword">else</span>: <span class="builtin">print</span>(<span class="string">"Совершеннолетний"</span>) <span class="comment"># Тернарный оператор</span> status = <span class="string">"взрослый"</span> <span class="keyword">if</span> age &gt;= <span class="number">18</span> <span class="keyword">else</span> <span class="string">"ребёнок"</span></code>
+          </div>
+          <h3 class="text-lg font-semibold mt-6 mb-3">Цикл for</h3>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="comment"># Перебор списка</span> fruits = [<span class="string">"яблоко"</span>, <span class="string">"банан"</span>, <span class="string">"апельсин"</span>] <span class="keyword">for</span> fruit <span class="keyword">in</span> fruits: <span class="builtin">print</span>(fruit) <span class="comment"># Использование range()</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="builtin">range</span>(<span class="number">5</span>): <span class="builtin">print</span>(i) <span class="comment"># 0, 1, 2, 3, 4</span> <span class="comment"># Перебор с индексом</span> <span class="keyword">for</span> index, fruit <span class="keyword">in</span> <span class="builtin">enumerate</span>(fruits): <span class="builtin">print</span>(f<span class="string">"{index}: {fruit}"</span>) <span class="comment"># Списковое включение</span> squares = [x**<span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> <span class="builtin">range</span>(<span class="number">10</span>)]</code>
+          </div>
+          <h3 class="text-lg font-semibold mt-6 mb-3">Цикл while</h3>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100">count = <span class="number">0</span> <span class="keyword">while</span> count &lt; <span class="number">5</span>: <span class="builtin">print</span>(count) count += <span class="number">1</span> <span class="comment"># break и continue</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="builtin">range</span>(<span class="number">10</span>): <span class="keyword">if</span> i == <span class="number">3</span>: <span class="keyword">continue</span> <span class="comment"># Пропустить 3</span> <span class="keyword">if</span> i == <span class="number">7</span>: <span class="keyword">break</span> <span class="comment"># Выйти из цикла</span> <span class="builtin">print</span>(i)</code>
+          </div>
+         </div>
+        </section><!-- Functions -->
+        <section id="functions" class="scroll-mt-24">
+         <div class="flex items-center gap-3 mb-6"><span class="text-3xl">🔧</span>
+          <h2 class="text-2xl font-bold">Функции</h2>
+         </div>
+         <div class="prose dark:prose-invert max-w-none">
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="comment"># Простая функция</span> <span class="keyword">def</span> <span class="function">greet</span>(name): <span class="keyword">return</span> f<span class="string">"Привет, {name}!"</span> <span class="builtin">print</span>(greet(<span class="string">"Мир"</span>)) <span class="comment"># Аргументы по умолчанию</span> <span class="keyword">def</span> <span class="function">power</span>(base, exp=<span class="number">2</span>): <span class="keyword">return</span> base ** exp <span class="builtin">print</span>(power(<span class="number">3</span>)) <span class="comment"># 9</span> <span class="builtin">print</span>(power(<span class="number">3</span>, <span class="number">3</span>)) <span class="comment"># 27</span> <span class="comment"># *args и **kwargs</span> <span class="keyword">def</span> <span class="function">flex_func</span>(*args, **kwargs): <span class="builtin">print</span>(<span class="string">"Позиционные:"</span>, args) <span class="builtin">print</span>(<span class="string">"Именованные:"</span>, kwargs) flex_func(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, name=<span class="string">"Анна"</span>, age=<span class="number">25</span>) <span class="comment"># Lambda-функции</span> square = <span class="keyword">lambda</span> x: x ** <span class="number">2</span> <span class="builtin">print</span>(square(<span class="number">5</span>)) <span class="comment"># 25</span> <span class="comment"># Функции высшего порядка</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>] squared = <span class="builtin">list</span>(<span class="builtin">map</span>(<span class="keyword">lambda</span> x: x**<span class="number">2</span>, numbers)) evens = <span class="builtin">list</span>(<span class="builtin">filter</span>(<span class="keyword">lambda</span> x: x % <span class="number">2</span> == <span class="number">0</span>, numbers))</code>
+          </div>
+         </div>
+        </section><!-- OOP -->
+        <section id="oop" class="scroll-mt-24">
+         <div class="flex items-center gap-3 mb-6"><span class="text-3xl">🎯</span>
+          <h2 class="text-2xl font-bold">Объектно-ориентированное программирование</h2>
+         </div>
+         <div class="prose dark:prose-invert max-w-none">
+          <h3 class="text-lg font-semibold mb-3">Классы и объекты</h3>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="keyword">class</span> <span class="function">Person</span>: <span class="string">"""Класс, представляющий человека"""</span> <span class="comment"># Конструктор</span> <span class="keyword">def</span> <span class="function">__init__</span>(self, name, age): self.name = name <span class="comment"># Публичный атрибут</span> self._age = age <span class="comment"># Защищённый атрибут</span> self.__id = <span class="builtin">id</span>(self) <span class="comment"># Приватный атрибут</span> <span class="comment"># Метод экземпляра</span> <span class="keyword">def</span> <span class="function">introduce</span>(self): <span class="keyword">return</span> f<span class="string">"Меня зовут {self.name}, мне {self._age} лет"</span> <span class="comment"># Свойство (property)</span> <span class="decorator">@property</span> <span class="keyword">def</span> <span class="function">age</span>(self): <span class="keyword">return</span> self._age <span class="decorator">@age.setter</span> <span class="keyword">def</span> <span class="function">age</span>(self, value): <span class="keyword">if</span> value &gt; <span class="number">0</span>: self._age = value <span class="comment"># Создание объекта</span> person = Person(<span class="string">"Анна"</span>, <span class="number">25</span>) <span class="builtin">print</span>(person.introduce())</code>
+          </div>
+          <h3 class="text-lg font-semibold mt-6 mb-3">Наследование</h3>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="keyword">class</span> <span class="function">Animal</span>: <span class="keyword">def</span> <span class="function">__init__</span>(self, name): self.name = name <span class="keyword">def</span> <span class="function">speak</span>(self): <span class="keyword">raise</span> <span class="builtin">NotImplementedError</span> <span class="keyword">class</span> <span class="function">Dog</span>(Animal): <span class="keyword">def</span> <span class="function">speak</span>(self): <span class="keyword">return</span> f<span class="string">"{self.name} говорит: Гав!"</span> <span class="keyword">class</span> <span class="function">Cat</span>(Animal): <span class="keyword">def</span> <span class="function">speak</span>(self): <span class="keyword">return</span> f<span class="string">"{self.name} говорит: Мяу!"</span> <span class="comment"># Полиморфизм</span> animals = [Dog(<span class="string">"Бобик"</span>), Cat(<span class="string">"Мурка"</span>)] <span class="keyword">for</span> animal <span class="keyword">in</span> animals: <span class="builtin">print</span>(animal.speak())</code>
+          </div>
+          <h3 class="text-lg font-semibold mt-6 mb-3">Магические методы</h3>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="keyword">class</span> <span class="function">Vector</span>: <span class="keyword">def</span> <span class="function">__init__</span>(self, x, y): self.x = x self.y = y <span class="keyword">def</span> <span class="function">__add__</span>(self, other): <span class="keyword">return</span> Vector(self.x + other.x, self.y + other.y) <span class="keyword">def</span> <span class="function">__str__</span>(self): <span class="keyword">return</span> f<span class="string">"Vector({self.x}, {self.y})"</span> <span class="keyword">def</span> <span class="function">__repr__</span>(self): <span class="keyword">return</span> self.__str__() v1 = Vector(<span class="number">1</span>, <span class="number">2</span>) v2 = Vector(<span class="number">3</span>, <span class="number">4</span>) <span class="builtin">print</span>(v1 + v2) <span class="comment"># Vector(4, 6)</span></code>
+          </div>
+         </div>
+        </section><!-- Modules -->
+        <section id="modules" class="scroll-mt-24">
+         <div class="flex items-center gap-3 mb-6"><span class="text-3xl">📦</span>
+          <h2 class="text-2xl font-bold">Модули и пакеты</h2>
+         </div>
+         <div class="prose dark:prose-invert max-w-none">
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="comment"># Импорт модулей</span> <span class="keyword">import</span> math <span class="keyword">import</span> random <span class="keyword">from</span> datetime <span class="keyword">import</span> datetime, timedelta <span class="keyword">from</span> collections <span class="keyword">import</span> Counter, defaultdict <span class="comment"># Использование стандартных модулей</span> <span class="builtin">print</span>(math.pi) <span class="comment"># 3.14159...</span> <span class="builtin">print</span>(math.sqrt(<span class="number">16</span>)) <span class="comment"># 4.0</span> <span class="builtin">print</span>(random.randint(<span class="number">1</span>, <span class="number">10</span>)) <span class="comment"># Работа с датой и временем</span> now = datetime.now() <span class="builtin">print</span>(now.strftime(<span class="string">"%d.%m.%Y %H:%M"</span>)) <span class="comment"># Counter — подсчёт элементов</span> words = [<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"apple"</span>, <span class="string">"apple"</span>] counter = Counter(words) <span class="builtin">print</span>(counter.most_common(<span class="number">1</span>)) <span class="comment"># [('apple', 3)]</span></code>
+          </div>
+          <h3 class="text-lg font-semibold mt-6 mb-3">Создание своего модуля</h3>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="comment"># mymodule.py</span> <span class="keyword">def</span> <span class="function">greet</span>(name): <span class="keyword">return</span> f<span class="string">"Привет, {name}!"</span> PI = <span class="number">3.14159</span> <span class="comment"># main.py</span> <span class="keyword">from</span> mymodule <span class="keyword">import</span> greet, PI <span class="builtin">print</span>(greet(<span class="string">"Мир"</span>)) <span class="builtin">print</span>(PI)</code>
+          </div>
+         </div>
+        </section><!-- Virtual Environments -->
+        <section id="venv" class="scroll-mt-24">
+         <div class="flex items-center gap-3 mb-6"><span class="text-3xl">🌍</span>
+          <h2 class="text-2xl font-bold">Виртуальные окружения</h2>
+         </div>
+         <div class="prose dark:prose-invert max-w-none">
+          <p class="text-gray-600 dark:text-gray-400 mb-4">Виртуальное окружение — изолированная среда Python для каждого проекта со своими зависимостями.</p>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="comment"># Создание виртуального окружения</span> python -m venv myenv <span class="comment"># Активация (Windows)</span> myenv\Scripts\activate <span class="comment"># Активация (macOS/Linux)</span> source myenv/bin/activate <span class="comment"># Деактивация</span> deactivate <span class="comment"># Установка пакетов в окружение</span> pip install requests flask <span class="comment"># Сохранение зависимостей</span> pip freeze &gt; requirements.txt <span class="comment"># Установка из requirements.txt</span> pip install -r requirements.txt</code>
+          </div>
+          <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 mt-4">
+           <p class="text-sm"><strong>💡 Совет:</strong> Всегда создавайте виртуальное окружение для каждого нового проекта, чтобы избежать конфликтов между версиями пакетов.</p>
+          </div>
+         </div>
+        </section><!-- Files -->
+        <section id="files" class="scroll-mt-24">
+         <div class="flex items-center gap-3 mb-6"><span class="text-3xl">📁</span>
+          <h2 class="text-2xl font-bold">Работа с файлами</h2>
+         </div>
+         <div class="prose dark:prose-invert max-w-none">
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="comment"># Чтение файла</span> <span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"file.txt"</span>, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f: content = f.read() <span class="comment"># Весь файл</span> <span class="comment"># lines = f.readlines() # Список строк</span> <span class="comment"># Запись в файл</span> <span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"output.txt"</span>, <span class="string">"w"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f: f.write(<span class="string">"Привет, мир!\n"</span>) f.writelines([<span class="string">"Строка 1\n"</span>, <span class="string">"Строка 2\n"</span>]) <span class="comment"># Добавление в файл</span> <span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"log.txt"</span>, <span class="string">"a"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f: f.write(<span class="string">"Новая запись\n"</span>) <span class="comment"># Работа с JSON</span> <span class="keyword">import</span> json data = {<span class="string">"name"</span>: <span class="string">"Анна"</span>, <span class="string">"age"</span>: <span class="number">25</span>} <span class="comment"># Запись JSON</span> <span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"data.json"</span>, <span class="string">"w"</span>) <span class="keyword">as</span> f: json.dump(data, f, ensure_ascii=<span class="keyword">False</span>, indent=<span class="number">2</span>) <span class="comment"># Чтение JSON</span> <span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"data.json"</span>, <span class="string">"r"</span>) <span class="keyword">as</span> f: loaded = json.load(f)</code>
+          </div>
+         </div>
+        </section><!-- Exceptions -->
+        <section id="exceptions" class="scroll-mt-24">
+         <div class="flex items-center gap-3 mb-6"><span class="text-3xl">⚠️</span>
+          <h2 class="text-2xl font-bold">Обработка исключений</h2>
+         </div>
+         <div class="prose dark:prose-invert max-w-none">
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="keyword">try</span>: result = <span class="number">10</span> / <span class="number">0</span> <span class="keyword">except</span> <span class="builtin">ZeroDivisionError</span>: <span class="builtin">print</span>(<span class="string">"Деление на ноль!"</span>) <span class="keyword">except</span> <span class="builtin">Exception</span> <span class="keyword">as</span> e: <span class="builtin">print</span>(f<span class="string">"Ошибка: {e}"</span>) <span class="keyword">else</span>: <span class="builtin">print</span>(<span class="string">"Всё прошло успешно"</span>) <span class="keyword">finally</span>: <span class="builtin">print</span>(<span class="string">"Этот код выполнится всегда"</span>) <span class="comment"># Создание своего исключения</span> <span class="keyword">class</span> <span class="function">ValidationError</span>(<span class="builtin">Exception</span>): <span class="keyword">pass</span> <span class="keyword">def</span> <span class="function">validate_age</span>(age): <span class="keyword">if</span> age &lt; <span class="number">0</span>: <span class="keyword">raise</span> ValidationError(<span class="string">"Возраст не может быть отрицательным"</span>) <span class="keyword">return</span> <span class="keyword">True</span></code>
+          </div>
+         </div>
+        </section><!-- API -->
+        <section id="api" class="scroll-mt-24">
+         <div class="flex items-center gap-3 mb-6"><span class="text-3xl">🌐</span>
+          <h2 class="text-2xl font-bold">Работа с API</h2>
+         </div>
+         <div class="prose dark:prose-invert max-w-none">
+          <p class="text-gray-600 dark:text-gray-400 mb-4">Библиотека requests — самый популярный способ работы с HTTP в Python.</p>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="keyword">import</span> requests <span class="comment"># GET-запрос</span> response = requests.get(<span class="string">"https://api.github.com/users/python"</span>) <span class="keyword">if</span> response.status_code == <span class="number">200</span>: data = response.json() <span class="builtin">print</span>(data[<span class="string">"login"</span>]) <span class="builtin">print</span>(data[<span class="string">"public_repos"</span>]) <span class="comment"># GET с параметрами</span> params = {<span class="string">"q"</span>: <span class="string">"python"</span>, <span class="string">"sort"</span>: <span class="string">"stars"</span>} response = requests.get( <span class="string">"https://api.github.com/search/repositories"</span>, params=params ) <span class="comment"># POST-запрос</span> data = {<span class="string">"title"</span>: <span class="string">"Новый пост"</span>, <span class="string">"body"</span>: <span class="string">"Содержимое"</span>} response = requests.post( <span class="string">"https://jsonplaceholder.typicode.com/posts"</span>, json=data ) <span class="comment"># Заголовки</span> headers = {<span class="string">"Authorization"</span>: <span class="string">"Bearer YOUR_TOKEN"</span>} response = requests.get(url, headers=headers) <span class="comment"># Обработка ошибок</span> <span class="keyword">try</span>: response = requests.get(url, timeout=<span class="number">5</span>) response.raise_for_status() <span class="keyword">except</span> requests.exceptions.RequestException <span class="keyword">as</span> e: <span class="builtin">print</span>(f<span class="string">"Ошибка запроса: {e}"</span>)</code>
+          </div>
+         </div>
+        </section><!-- Async -->
+        <section id="async" class="scroll-mt-24">
+         <div class="flex items-center gap-3 mb-6"><span class="text-3xl">⚡</span>
+          <h2 class="text-2xl font-bold">Асинхронное программирование</h2>
+         </div>
+         <div class="prose dark:prose-invert max-w-none">
+          <p class="text-gray-600 dark:text-gray-400 mb-4">Async позволяет выполнять множество операций ввода-вывода одновременно без блокировки.</p>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="keyword">import</span> asyncio <span class="keyword">import</span> aiohttp <span class="comment"># Базовая корутина</span> <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">hello</span>(): <span class="builtin">print</span>(<span class="string">"Привет"</span>) <span class="keyword">await</span> asyncio.sleep(<span class="number">1</span>) <span class="builtin">print</span>(<span class="string">"Мир"</span>) <span class="comment"># Запуск</span> asyncio.run(hello()) <span class="comment"># Параллельное выполнение</span> <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">fetch_url</span>(session, url): <span class="keyword">async</span> <span class="keyword">with</span> session.get(url) <span class="keyword">as</span> response: <span class="keyword">return</span> <span class="keyword">await</span> response.text() <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">main</span>(): urls = [ <span class="string">"https://python.org"</span>, <span class="string">"https://pypi.org"</span>, <span class="string">"https://docs.python.org"</span> ] <span class="keyword">async</span> <span class="keyword">with</span> aiohttp.ClientSession() <span class="keyword">as</span> session: tasks = [fetch_url(session, url) <span class="keyword">for</span> url <span class="keyword">in</span> urls] results = <span class="keyword">await</span> asyncio.gather(*tasks) <span class="keyword">return</span> results <span class="comment"># asyncio.gather() запускает все задачи параллельно</span> results = asyncio.run(main())</code>
+          </div>
+         </div>
+        </section><!-- Flask -->
+        <section id="flask" class="scroll-mt-24">
+         <div class="flex items-center gap-3 mb-6"><span class="text-3xl">🍶</span>
+          <h2 class="text-2xl font-bold">Flask</h2>
+         </div>
+         <div class="prose dark:prose-invert max-w-none">
+          <p class="text-gray-600 dark:text-gray-400 mb-4">Flask — лёгкий и гибкий веб-фреймворк для Python.</p>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, request, jsonify app = Flask(__name__) <span class="comment"># Простой маршрут</span> <span class="decorator">@app.route</span>(<span class="string">"/"</span>) <span class="keyword">def</span> <span class="function">home</span>(): <span class="keyword">return</span> <span class="string">"Привет, Flask!"</span> <span class="comment"># Маршрут с параметром</span> <span class="decorator">@app.route</span>(<span class="string">"/user/&lt;username&gt;"</span>) <span class="keyword">def</span> <span class="function">user_profile</span>(username): <span class="keyword">return</span> f<span class="string">"Профиль: {username}"</span> <span class="comment"># JSON API</span> <span class="decorator">@app.route</span>(<span class="string">"/api/data"</span>, methods=[<span class="string">"GET"</span>, <span class="string">"POST"</span>]) <span class="keyword">def</span> <span class="function">api_data</span>(): <span class="keyword">if</span> request.method == <span class="string">"POST"</span>: data = request.get_json() <span class="keyword">return</span> jsonify({<span class="string">"received"</span>: data}), <span class="number">201</span> <span class="keyword">return</span> jsonify({<span class="string">"message"</span>: <span class="string">"Привет, API!"</span>}) <span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>: app.run(debug=<span class="keyword">True</span>)</code>
+          </div>
+          <div class="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 mt-4">
+           <p class="text-sm font-mono">pip install flask<br>
+            python app.py<br>
+            # Сервер: http://127.0.0.1:5000</p>
+          </div>
+         </div>
+        </section><!-- FastAPI -->
+        <section id="fastapi" class="scroll-mt-24">
+         <div class="flex items-center gap-3 mb-6"><span class="text-3xl">🚀</span>
+          <h2 class="text-2xl font-bold">FastAPI</h2>
+         </div>
+         <div class="prose dark:prose-invert max-w-none">
+          <p class="text-gray-600 dark:text-gray-400 mb-4">FastAPI — современный, быстрый фреймворк с автоматической валидацией и документацией.</p>
+          <div class="code-block p-4 mb-4"><code class="text-gray-100"><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI <span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel <span class="keyword">from</span> typing <span class="keyword">import</span> Optional app = FastAPI() <span class="comment"># Модель данных с валидацией</span> <span class="keyword">class</span> <span class="function">Item</span>(BaseModel): name: <span class="builtin">str</span> price: <span class="builtin">float</span> is_available: Optional[<span class="builtin">bool</span>] = <span class="keyword">True</span> <span class="comment"># GET-запрос</span> <span class="decorator">@app.get</span>(<span class="string">"/"</span>) <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">root</span>(): <span class="keyword">return</span> {<span class="string">"message"</span>: <span class="string">"Привет, FastAPI!"</span>} <span class="comment"># Параметры пути</span> <span class="decorator">@app.get</span>(<span class="string">"/items/{item_id}"</span>) <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">read_item</span>(item_id: <span class="builtin">int</span>, q: Optional[<span class="builtin">str</span>] = <span class="keyword">None</span>): <span class="keyword">return</span> {<span class="string">"item_id"</span>: item_id, <span class="string">"query"</span>: q} <span class="comment"># POST с валидацией</span> <span class="decorator">@app.post</span>(<span class="string">"/items/"</span>) <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">create_item</span>(item: Item): <span class="keyword">return</span> {<span class="string">"item"</span>: item.dict(), <span class="string">"status"</span>: <span class="string">"created"</span>}</code>
+          </div>
+          <div class="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 mt-4">
+           <p class="text-sm font-mono">pip install fastapi uvicorn<br>
+            uvicorn main:app --reload<br>
+            # Сервер: http://127.0.0.1:8000<br>
+            # Документация: http://127.0.0.1:8000/docs</p>
+          </div>
+         </div>
+        </section>
+       </div>
+      </div>
+     </div>
+    </div><!-- Cheatsheet Page -->
+    <div id="page-cheatsheet" class="page hidden">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <h1 class="text-3xl sm:text-4xl font-bold mb-8">Шпаргалки Python</h1>
+      <div class="grid md:grid-cols-2 gap-6"><!-- Strings -->
+       <div class="bg-white dark:bg-python-dark rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-green-50 dark:bg-green-900/20">
+         <h2 class="font-bold">📝 Строки</h2>
+        </div>
+        <div class="p-4">
+         <div class="code-block p-3 text-xs"><code class="text-gray-100">s = <span class="string">"Hello World"</span> s.upper() <span class="comment"># HELLO WORLD</span> s.lower() <span class="comment"># hello world</span> s.title() <span class="comment"># Hello World</span> s.strip() <span class="comment"># Убрать пробелы</span> s.split() <span class="comment"># ['Hello', 'World']</span> s.replace(<span class="string">"o"</span>, <span class="string">"0"</span>) <span class="comment"># Hell0 W0rld</span> s.startswith(<span class="string">"H"</span>) <span class="comment"># True</span> s.find(<span class="string">"o"</span>) <span class="comment"># 4</span> <span class="builtin">len</span>(s) <span class="comment"># 11</span> s[<span class="number">0</span>:<span class="number">5</span>] <span class="comment"># Hello</span> f<span class="string">"{name}: {age}"</span> <span class="comment"># f-строки</span></code>
+         </div>
+        </div>
+       </div><!-- Lists -->
+       <div class="bg-white dark:bg-python-dark rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-blue-50 dark:bg-blue-900/20">
+         <h2 class="font-bold">📋 Списки</h2>
+        </div>
+        <div class="p-4">
+         <div class="code-block p-3 text-xs"><code class="text-gray-100">lst = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>] lst.append(<span class="number">4</span>) <span class="comment"># [1, 2, 3, 4]</span> lst.insert(<span class="number">0</span>, <span class="number">0</span>) <span class="comment"># [0, 1, 2, 3, 4]</span> lst.pop() <span class="comment"># Удалить последний</span> lst.remove(<span class="number">2</span>) <span class="comment"># Удалить значение</span> lst.sort() <span class="comment"># Сортировка</span> lst.reverse() <span class="comment"># Развернуть</span> lst.index(<span class="number">1</span>) <span class="comment"># Индекс элемента</span> lst.count(<span class="number">1</span>) <span class="comment"># Количество</span> <span class="builtin">len</span>(lst) <span class="comment"># Длина</span> lst[<span class="number">1</span>:<span class="number">3</span>] <span class="comment"># Срез</span> [x**<span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> lst] <span class="comment"># List comprehension</span></code>
+         </div>
+        </div>
+       </div><!-- Dictionaries -->
+       <div class="bg-white dark:bg-python-dark rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-purple-50 dark:bg-purple-900/20">
+         <h2 class="font-bold">📖 Словари</h2>
+        </div>
+        <div class="p-4">
+         <div class="code-block p-3 text-xs"><code class="text-gray-100">d = {<span class="string">"a"</span>: <span class="number">1</span>, <span class="string">"b"</span>: <span class="number">2</span>} d[<span class="string">"c"</span>] = <span class="number">3</span> <span class="comment"># Добавить</span> d.get(<span class="string">"a"</span>) <span class="comment"># 1</span> d.get(<span class="string">"x"</span>, <span class="number">0</span>) <span class="comment"># 0 (default)</span> d.keys() <span class="comment"># dict_keys</span> d.values() <span class="comment"># dict_values</span> d.items() <span class="comment"># dict_items</span> d.pop(<span class="string">"a"</span>) <span class="comment"># Удалить ключ</span> d.update({<span class="string">"d"</span>: <span class="number">4</span>}) <span class="comment"># Обновить</span> <span class="string">"a"</span> <span class="keyword">in</span> d <span class="comment"># True</span> <span class="keyword">del</span> d[<span class="string">"b"</span>] <span class="comment"># Удалить</span> {k: v**<span class="number">2</span> <span class="keyword">for</span> k, v <span class="keyword">in</span> d.items()}</code>
+         </div>
+        </div>
+       </div><!-- Files -->
+       <div class="bg-white dark:bg-python-dark rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-yellow-50 dark:bg-yellow-900/20">
+         <h2 class="font-bold">📁 Файлы</h2>
+        </div>
+        <div class="p-4">
+         <div class="code-block p-3 text-xs"><code class="text-gray-100"><span class="comment"># Чтение</span> <span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"f.txt"</span>, <span class="string">"r"</span>) <span class="keyword">as</span> f: text = f.read() <span class="comment"># Запись</span> <span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"f.txt"</span>, <span class="string">"w"</span>) <span class="keyword">as</span> f: f.write(<span class="string">"text"</span>) <span class="comment"># Дописать</span> <span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"f.txt"</span>, <span class="string">"a"</span>) <span class="keyword">as</span> f: f.write(<span class="string">"more"</span>) <span class="comment"># JSON</span> <span class="keyword">import</span> json json.dump(data, f) data = json.load(f)</code>
+         </div>
+        </div>
+       </div><!-- Control Flow -->
+       <div class="bg-white dark:bg-python-dark rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-red-50 dark:bg-red-900/20">
+         <h2 class="font-bold">🔄 Управление потоком</h2>
+        </div>
+        <div class="p-4">
+         <div class="code-block p-3 text-xs"><code class="text-gray-100"><span class="comment"># if/elif/else</span> <span class="keyword">if</span> x &gt; <span class="number">0</span>: <span class="builtin">print</span>(<span class="string">"+"</span>) <span class="keyword">elif</span> x &lt; <span class="number">0</span>: <span class="builtin">print</span>(<span class="string">"-"</span>) <span class="keyword">else</span>: <span class="builtin">print</span>(<span class="string">"0"</span>) <span class="comment"># for</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="builtin">range</span>(<span class="number">10</span>): <span class="builtin">print</span>(i) <span class="comment"># while</span> <span class="keyword">while</span> x &gt; <span class="number">0</span>: x -= <span class="number">1</span> <span class="comment"># Тернарный оператор</span> result = <span class="string">"да"</span> <span class="keyword">if</span> x <span class="keyword">else</span> <span class="string">"нет"</span></code>
+         </div>
+        </div>
+       </div><!-- Functions -->
+       <div class="bg-white dark:bg-python-dark rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-cyan-50 dark:bg-cyan-900/20">
+         <h2 class="font-bold">🔧 Функции</h2>
+        </div>
+        <div class="p-4">
+         <div class="code-block p-3 text-xs"><code class="text-gray-100"><span class="comment"># Определение</span> <span class="keyword">def</span> <span class="function">func</span>(a, b=<span class="number">1</span>): <span class="keyword">return</span> a + b <span class="comment"># *args, **kwargs</span> <span class="keyword">def</span> <span class="function">flex</span>(*args, **kwargs): <span class="builtin">print</span>(args, kwargs) <span class="comment"># Lambda</span> square = <span class="keyword">lambda</span> x: x**<span class="number">2</span> <span class="comment"># map, filter</span> <span class="builtin">list</span>(<span class="builtin">map</span>(<span class="keyword">lambda</span> x: x*<span class="number">2</span>, lst)) <span class="builtin">list</span>(<span class="builtin">filter</span>(<span class="keyword">lambda</span> x: x&gt;<span class="number">0</span>, lst)) <span class="comment"># Декоратор</span> <span class="decorator">@decorator</span> <span class="keyword">def</span> <span class="function">func</span>(): <span class="keyword">pass</span></code>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div><!-- FAQ Page -->
+    <div id="page-faq" class="page hidden">
+     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <h1 class="text-3xl sm:text-4xl font-bold mb-8">Часто задаваемые вопросы</h1>
+      <div class="space-y-4">
+       <div class="faq-item bg-white dark:bg-python-dark rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"><button onclick="toggleFaq(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition"> <span class="font-semibold">Какую версию Python выбрать?</span>
+         <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+         </svg></button>
+        <div class="faq-answer hidden px-6 pb-4">
+         <p class="text-gray-600 dark:text-gray-400">Всегда выбирайте последнюю стабильную версию Python 3.x (например, 3.12 или 3.13). Python 2 больше не поддерживается с 2020 года.</p>
+        </div>
+       </div>
+       <div class="faq-item bg-white dark:bg-python-dark rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"><button onclick="toggleFaq(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition"> <span class="font-semibold">В чём разница между списком и кортежем?</span>
+         <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+         </svg></button>
+        <div class="faq-answer hidden px-6 pb-4">
+         <p class="text-gray-600 dark:text-gray-400">Список (list) — изменяемый, можно добавлять и удалять элементы. Кортеж (tuple) — неизменяемый, после создания его нельзя изменить. Кортежи быстрее и используют меньше памяти.</p>
+        </div>
+       </div>
+       <div class="faq-item bg-white dark:bg-python-dark rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"><button onclick="toggleFaq(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition"> <span class="font-semibold">Зачем нужны виртуальные окружения?</span>
+         <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+         </svg></button>
+        <div class="faq-answer hidden px-6 pb-4">
+         <p class="text-gray-600 dark:text-gray-400">Виртуальные окружения изолируют зависимости каждого проекта. Один проект может использовать Django 3.2, другой — Django 4.0, и они не будут конфликтовать.</p>
+        </div>
+       </div>
+       <div class="faq-item bg-white dark:bg-python-dark rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"><button onclick="toggleFaq(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition"> <span class="font-semibold">Что лучше: Flask или FastAPI?</span>
+         <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+         </svg></button>
+        <div class="faq-answer hidden px-6 pb-4">
+         <p class="text-gray-600 dark:text-gray-400">Flask проще для начинающих и отлично подходит для небольших проектов. FastAPI — современнее, быстрее, имеет встроенную валидацию и автоматическую документацию API. Для новых API-проектов рекомендуется FastAPI.</p>
+        </div>
+       </div>
+       <div class="faq-item bg-white dark:bg-python-dark rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"><button onclick="toggleFaq(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition"> <span class="font-semibold">Что такое __init__.py?</span>
+         <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+         </svg></button>
+        <div class="faq-answer hidden px-6 pb-4">
+         <p class="text-gray-600 dark:text-gray-400">Файл __init__.py делает директорию Python-пакетом. Он может быть пустым или содержать код инициализации пакета. В Python 3.3+ для namespace packages он не обязателен, но рекомендуется для явности.</p>
+        </div>
+       </div>
+       <div class="faq-item bg-white dark:bg-python-dark rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"><button onclick="toggleFaq(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition"> <span class="font-semibold">Как работает self в классах?</span>
+         <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+         </svg></button>
+        <div class="faq-answer hidden px-6 pb-4">
+         <p class="text-gray-600 dark:text-gray-400">self — это ссылка на текущий экземпляр класса. Он передаётся автоматически в методы класса и используется для доступа к атрибутам и методам объекта. Имя self — это соглашение, технически можно использовать любое имя.</p>
+        </div>
+       </div>
+       <div class="faq-item bg-white dark:bg-python-dark rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"><button onclick="toggleFaq(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition"> <span class="font-semibold">Когда использовать async/await?</span>
+         <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+         </svg></button>
+        <div class="faq-answer hidden px-6 pb-4">
+         <p class="text-gray-600 dark:text-gray-400">Асинхронный код полезен для операций ввода-вывода: HTTP-запросы, работа с файлами, базами данных. Он позволяет не блокировать программу во время ожидания. Для CPU-интенсивных задач лучше использовать многопоточность или multiprocessing.</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </main><!-- Footer -->
+   <footer class="bg-white dark:bg-python-dark border-t border-gray-200 dark:border-gray-700 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+     <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+       <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-python-blue to-python-yellow flex items-center justify-center"><span class="text-sm">🐍</span>
+       </div><span class="font-semibold">Python Learning Hub</span>
+      </div>
+      <p id="footer-author" class="text-gray-600 dark:text-gray-400 text-sm text-center">Сайт разработал Русинов Давид, 10А класс</p>
+      <div class="flex items-center gap-4"><a href="https://python.org" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 hover:text-python-blue transition">python.org</a> <a href="https://docs.python.org" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 hover:text-python-blue transition">Документация</a>
+      </div>
+     </div>
+    </div>
+   </footer>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      site_title: 'Python Learning Hub',
+      footer_author: 'Сайт разработал Русинов Давид, 10А класс',
+      primary_color: '#306998',
+      secondary_color: '#FFD43B',
+      text_color: '#1f2937',
+      background_color: '#f9fafb',
+      surface_color: '#ffffff'
+    };
+    
+    let config = { ...defaultConfig };
+    
+    // Theme Management
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isDark = html.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      updateThemeIcon();
+    }
+    
+    function updateThemeIcon() {
+      const isDark = document.documentElement.classList.contains('dark');
+      const icon = isDark ? '☀️' : '🌙';
+      const themeIcon = document.getElementById('theme-icon');
+      const themeIconMobile = document.getElementById('theme-icon-mobile');
+      if (themeIcon) themeIcon.textContent = icon;
+      if (themeIconMobile) themeIconMobile.textContent = icon;
+    }
+    
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+      updateThemeIcon();
+    }
+    
+    // Mobile Menu
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+    
+    // Page Navigation
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
+      const targetPage = document.getElementById(`page-${pageId}`);
+      if (targetPage) {
+        targetPage.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      closeSearchResults();
+    }
+    
+    // Scroll to Section
+    function scrollToSection(sectionId) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    
+    // FAQ Toggle
+    function toggleFaq(button) {
+      const answer = button.nextElementSibling;
+      const icon = button.querySelector('svg');
+      answer.classList.toggle('hidden');
+      icon.classList.toggle('rotate-180');
+    }
+    
+    // Search Functionality
+    const searchData = [
+      { title: 'Переменные', section: 'basics', page: 'tutorial', keywords: 'переменные variables int str float' },
+      { title: 'Операторы', section: 'basics', page: 'tutorial', keywords: 'операторы operators + - * / **' },
+      { title: 'Списки (list)', section: 'data-types', page: 'tutorial', keywords: 'список list массив array append' },
+      { title: 'Словари (dict)', section: 'data-types', page: 'tutorial', keywords: 'словарь dict dictionary ключ значение' },
+      { title: 'Кортежи (tuple)', section: 'data-types', page: 'tutorial', keywords: 'кортеж tuple неизменяемый' },
+      { title: 'Множества (set)', section: 'data-types', page: 'tutorial', keywords: 'множество set уникальный' },
+      { title: 'Условия if/else', section: 'control-flow', page: 'tutorial', keywords: 'условие if else elif' },
+      { title: 'Цикл for', section: 'control-flow', page: 'tutorial', keywords: 'цикл for loop range' },
+      { title: 'Цикл while', section: 'control-flow', page: 'tutorial', keywords: 'цикл while loop' },
+      { title: 'Функции', section: 'functions', page: 'tutorial', keywords: 'функция function def return lambda' },
+      { title: 'Классы и ООП', section: 'oop', page: 'tutorial', keywords: 'класс class ооп oop объект object' },
+      { title: 'Наследование', section: 'oop', page: 'tutorial', keywords: 'наследование inheritance super' },
+      { title: 'Модули', section: 'modules', page: 'tutorial', keywords: 'модуль module import' },
+      { title: 'Виртуальные окружения', section: 'venv', page: 'tutorial', keywords: 'venv virtualenv окружение' },
+      { title: 'Работа с файлами', section: 'files', page: 'tutorial', keywords: 'файл file open read write json' },
+      { title: 'Исключения', section: 'exceptions', page: 'tutorial', keywords: 'исключение exception try except error' },
+      { title: 'Работа с API', section: 'api', page: 'tutorial', keywords: 'api requests http get post' },
+      { title: 'Async Python', section: 'async', page: 'tutorial', keywords: 'async await asyncio асинхронный' },
+      { title: 'Flask', section: 'flask', page: 'tutorial', keywords: 'flask web server route' },
+      { title: 'FastAPI', section: 'fastapi', page: 'tutorial', keywords: 'fastapi api rest pydantic' },
+      { title: 'Установка Windows', section: 'windows', page: 'install', keywords: 'установка windows install path' },
+      { title: 'Установка macOS', section: 'macos', page: 'install', keywords: 'установка macos mac homebrew' },
+      { title: 'Установка Linux', section: 'linux', page: 'install', keywords: 'установка linux ubuntu apt' },
+      { title: 'VS Code', section: 'vscode', page: 'install', keywords: 'vscode vs code редактор editor' },
+      { title: 'pip', section: 'pip', page: 'install', keywords: 'pip install package пакет' }
+    ];
+    
+    function handleSearch(query) {
+      const resultsContainer = document.getElementById('search-results');
+      const resultsList = document.getElementById('search-results-list');
+      
+      if (!query || query.length < 2) {
+        resultsContainer.classList.add('hidden');
+        return;
+      }
+      
+      const lowerQuery = query.toLowerCase();
+      const results = searchData.filter(item => 
+        item.title.toLowerCase().includes(lowerQuery) || 
+        item.keywords.toLowerCase().includes(lowerQuery)
+      );
+      
+      if (results.length === 0) {
+        resultsList.innerHTML = '<p class="text-gray-500 text-sm">Ничего не найдено</p>';
+      } else {
+        resultsList.innerHTML = results.map(item => `
+          <button onclick="goToResult('${item.page}', '${item.section}')" 
+            class="block w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+            <span class="font-medium">${item.title}</span>
+            <span class="text-xs text-gray-500 ml-2">${item.page === 'tutorial' ? 'Учебник' : 'Установка'}</span>
+          </button>
+        `).join('');
+      }
+      
+      resultsContainer.classList.remove('hidden');
+    }
+    
+    function goToResult(page, section) {
+      showPage(page);
+      closeSearchResults();
+      setTimeout(() => {
+        const element = document.getElementById(section);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+    
+    function closeSearchResults() {
+      document.getElementById('search-results').classList.add('hidden');
+      document.getElementById('search-input').value = '';
+    }
+    
+    // Close search on outside click
+    document.addEventListener('click', (e) => {
+      const searchResults = document.getElementById('search-results');
+      const searchInput = document.getElementById('search-input');
+      if (!searchResults.contains(e.target) && e.target !== searchInput) {
+        searchResults.classList.add('hidden');
+      }
+    });
+    
+    // Element SDK Integration
+    async function onConfigChange(newConfig) {
+      config = { ...defaultConfig, ...newConfig };
+      
+      const siteTitle = document.getElementById('site-title');
+      if (siteTitle) {
+        siteTitle.textContent = config.site_title || defaultConfig.site_title;
+      }
+      
+      const footerAuthor = document.getElementById('footer-author');
+      if (footerAuthor) {
+        footerAuthor.textContent = config.footer_author || defaultConfig.footer_author;
+      }
+    }
+    
+    function mapToCapabilities(cfg) {
+      return {
+        recolorables: [],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      };
+    }
+    
+    function mapToEditPanelValues(cfg) {
+      return new Map([
+        ['site_title', cfg.site_title || defaultConfig.site_title],
+        ['footer_author', cfg.footer_author || defaultConfig.footer_author]
+      ]);
+    }
+    
+    // Initialize
+    initTheme();
+    
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cccae68f006cd05',t:'MTc3MDkwNTU1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
